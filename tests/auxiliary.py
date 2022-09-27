@@ -1,4 +1,4 @@
-from typing import Final
+from typing import Final, List
 
 SOURCE_PAGE: Final[str] = 'tests/fixtures/mocks/source_nodejs_course.html'
 DIRECTORY_NAME: Final[str] = 'page-loader-hexlet-repl-co_files'
@@ -21,7 +21,7 @@ JS_NAME: Final[str] = 'page-loader-hexlet-repl-co-script.js'
 IMAGE_NAME: Final[str] = 'page-loader-hexlet-repl-co-assets-professions-nodejs.png'
 INNER_HTML_NAME: Final[str] = 'page-loader-hexlet-repl-co-courses.html'
 
-RESOURCES: Final[list[str, str]] = [
+RESOURCES: Final[List[str, str]] = [
     {
         'link': 'https://page-loader.hexlet.repl.co/assets/professions/nodejs.png',
         'name': 'page-loader-hexlet-repl-co-assets-professions-nodejs.png'

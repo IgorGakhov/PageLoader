@@ -1,6 +1,6 @@
 import os
 from urllib.parse import urlparse, urljoin
-from typing import Final, Dict
+from typing import Final, List, Dict, Tuple
 
 import requests
 from bs4 import BeautifulSoup
@@ -41,7 +41,7 @@ def parse_page(url: str, dir_path: str) -> str:
     return html
 
 
-def search_resources(html: str, page_url: str) -> tuple[str, list[Dict]]:
+def search_resources(html: str, page_url: str) -> Tuple[str, List[Dict]]:
     '''Replaces resource links with their paths in the file system,
     returns the processed html and download links of these resources.'''
     dir_name = get_dir_name(page_url)
@@ -105,7 +105,7 @@ def create_resource_name(link: str) -> str:
     return resource_name
 
 
-def save_resources(resources: list, dir_path: str) -> None:
+def save_resources(resources: List, dir_path: str) -> None:
     '''Iterates through the passed list of resources,
     saves them locally at the given location.'''
     for resource in resources:
