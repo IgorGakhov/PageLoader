@@ -4,7 +4,7 @@
 from typing import NoReturn
 
 from page_loader.cli import parse_arguments
-from page_loader.parser.loader import download
+from page_loader.loading_handler.downloader import download
 
 
 def main() -> NoReturn:
