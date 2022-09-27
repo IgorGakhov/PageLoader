@@ -1,6 +1,6 @@
 import os
 from urllib.parse import urlparse, urljoin
-from typing import Final
+from typing import Final, Dict
 
 import requests
 from bs4 import BeautifulSoup
@@ -9,7 +9,7 @@ from page_loader.loading_handler.file_system_guide import \
     parse_url, get_dir_name, HTML_EXT
 
 
-TAGS_LINK_ATTRIBUTES: Final[dict] = {
+TAGS_LINK_ATTRIBUTES: Final[Dict] = {
     'img': 'src',
     'link': 'href',
     'script': 'src',
@@ -41,7 +41,7 @@ def parse_page(url: str, dir_path: str) -> str:
     return html
 
 
-def search_resources(html: str, page_url: str) -> tuple[str, list[dict]]:
+def search_resources(html: str, page_url: str) -> tuple[str, list[Dict]]:
     '''Replaces resource links with their paths in the file system,
     returns the processed html and download links of these resources.'''
     dir_name = get_dir_name(page_url)

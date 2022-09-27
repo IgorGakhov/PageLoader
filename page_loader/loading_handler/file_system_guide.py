@@ -1,7 +1,7 @@
 import os
 import re
 from urllib.parse import urlparse
-from typing import Final, Optional
+from typing import Final, Optional, Dict
 
 
 HTML_EXT: Final[str] = 'html'
@@ -91,7 +91,7 @@ def get_base_name(url: str) -> str:
     return netloc + path
 
 
-def parse_url(url: str) -> dict[str, str]:
+def parse_url(url: str) -> Dict[str, str]:
     '''Splits the URL into parts and converts them into a kebab-case view.'''
     parsed_url = urlparse(os.path.normcase(url))
     url_map = {
