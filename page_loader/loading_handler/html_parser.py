@@ -7,6 +7,10 @@ from bs4 import BeautifulSoup
 
 from page_loader.loading_handler.file_system_guide import \
     parse_url, get_dir_name, HTML_EXT
+from page_loader.logger import logger, \
+    START_PARSING, END_PARSING, START_SEARCHING, END_SEARCHING, \
+    START_SAVING, END_SAVING, START_GET_RESOURCE, END_GET_RESOURCE, \
+    START_SAVE_RESOURCE, END_SAVE_RESOURCE
 
 
 TAGS_LINK_ATTRIBUTES: Final[Dict] = {
@@ -33,10 +37,14 @@ def parse_page(url: str, dir_path: str) -> str:
     ---
         html (str): Processed HTML page with replaced links.
     '''
+    logger.debug(START_PARSING)
+
     page = requests.get(url)
     html, resources = search_resources(page.text, url)
 
     save_resources(resources, dir_path)
+
+    logger.debug(END_PARSING)
 
     return html
 
@@ -44,6 +52,8 @@ def parse_page(url: str, dir_path: str) -> str:
 def search_resources(html: str, page_url: str) -> Tuple[str, List[Dict]]:
     '''Replaces resource links with their paths in the file system,
     returns the processed html and download links of these resources.'''
+    logger.debug(START_SEARCHING)
+
     dir_name = get_dir_name(page_url)
 
     soup = BeautifulSoup(html, 'html.parser')
@@ -66,6 +76,8 @@ def search_resources(html: str, page_url: str) -> Tuple[str, List[Dict]]:
                 resources.append(resource)
 
     html = soup.prettify()
+
+    logger.debug(END_SEARCHING)
 
     return html, resources
 
@@ -108,9 +120,25 @@ def create_resource_name(link: str) -> str:
 def save_resources(resources: List, dir_path: str) -> None:
     '''Iterates through the passed list of resources,
     saves them locally at the given location.'''
+    logger.debug(START_SAVING)
+
     for resource in resources:
+
+        logger.debug(START_GET_RESOURCE.format(resource['link']))
+
         content = requests.get(resource['link']).content
+
+        logger.debug(END_GET_RESOURCE.format(resource['link']))
+
         resource_path = os.path.join(dir_path, resource['name'])
+
+        logger.debug(
+            START_SAVE_RESOURCE.format(resource['link'], resource_path)
+        )
 
         with open(resource_path, 'wb') as file:
             file.write(content)
+
+        logger.info(END_SAVE_RESOURCE.format(resource['link']))
+
+    logger.debug(END_SAVING)
