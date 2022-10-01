@@ -4,20 +4,35 @@ import logging.config
 from typing import Final, Dict
 
 
-START_DOWNLOAD: Final[str] = 'Initiated download of page {} to local directory «{}» ...'  # noqa: E501
-END_DOWNLOAD: Final[str] = '[FINISHED!] Loading is complete successfully!\n\
+# DEBUG & INFO levels
+START_DOWNLOAD: Final[str] = 'Initiated download of page {} \
+to local directory «{}» ...'
+FINISH_DOWNLOAD: Final[str] = 'FINISHED! Loading is complete successfully!\n\
 The downloaded page is located in the «{}» file,\n\
 the resources are located in «{}».\n'
 START_PARSING: Final[str] = 'Started HTML page parsing ...'
-END_PARSING: Final[str] = 'Finished HTML page parsing.'
+FINISH_PARSING: Final[str] = 'Finished HTML page parsing.'
+START_REQUEST: Final[str] = 'Getting a response from a page {} ...'
+FINISH_REQUEST: Final[str] = 'Response from page {} received.\n\
+Page available for download!'
 START_SEARCHING: Final[str] = 'Started replacing local resource links ...'
-END_SEARCHING: Final[str] = 'Finished replacing local resource links.'
+FINISH_SEARCHING: Final[str] = 'Finished replacing local resource links.'
 START_SAVING: Final[str] = 'Started saving page local resources ...'
-END_SAVING: Final[str] = 'Finished saving page local resources.'
+FINISH_SAVING: Final[str] = 'Finished saving page local resources.'
 START_GET_RESOURCE: Final[str] = 'Resource content request at address {} ...'
-END_GET_RESOURCE: Final[str] = 'Received resource content at address {}.'
-START_SAVE_RESOURCE: Final[str] = 'Saving the resource {} along the path «{}» ...'  # noqa: E501
-END_SAVE_RESOURCE: Final[str] = '[+] Resource {} saved successfully!'
+FINISH_GET_RESOURCE: Final[str] = 'Received resource content at address {}.'
+START_SAVE_RESOURCE: Final[str] = 'Saving the resource {} \
+along the path «{}» ...'
+FINISH_SAVE_RESOURCE: Final[str] = '[+] Resource {} saved successfully!'
+
+# ERROR level
+PROGRAM_FAILURE: Final[str] = 'There was a crash at runtime \
+for an unknown reason. See log file.'
+NOT_FOUND_DESTINATION: Final[str] = 'Invalid local path to save files: «{}».'
+DIRECTORY_CREATION_ERROR: Final[str] = 'A system error occurred \
+while creating director(y/ies): «{}».'
+REQUEST_ERROR: Final[str] = 'An ambiguous exception occurred while processing \
+a request for page {}.\nMake sure your input is correct and try again later.'
 
 CONSOLED_FORMAT: Final[str] = '{asctime} {levelname}: {message}'
 CONSOLED_DATE_FORMAT: Final[str] = '%H:%M:%S'

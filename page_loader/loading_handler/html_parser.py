@@ -1,6 +1,6 @@
 import os
 from urllib.parse import urlparse, urljoin
-from typing import Final, List, Dict, Tuple
+from typing import Final, Tuple, List, Dict
 
 import requests
 from bs4 import BeautifulSoup
@@ -8,9 +8,10 @@ from bs4 import BeautifulSoup
 from page_loader.loading_handler.file_system_guide import \
     parse_url, get_dir_name, HTML_EXT
 from page_loader.logger import logger, \
-    START_PARSING, END_PARSING, START_SEARCHING, END_SEARCHING, \
-    START_SAVING, END_SAVING, START_GET_RESOURCE, END_GET_RESOURCE, \
-    START_SAVE_RESOURCE, END_SAVE_RESOURCE
+    START_PARSING, FINISH_PARSING, START_SEARCHING, FINISH_SEARCHING, \
+    START_SAVING, FINISH_SAVING, START_GET_RESOURCE, FINISH_GET_RESOURCE, \
+    START_SAVE_RESOURCE, FINISH_SAVE_RESOURCE, START_REQUEST, FINISH_REQUEST, \
+    REQUEST_ERROR
 
 
 TAGS_LINK_ATTRIBUTES: Final[Dict] = {
@@ -39,14 +40,30 @@ def parse_page(url: str, dir_path: str) -> str:
     '''
     logger.debug(START_PARSING)
 
-    page = requests.get(url)
-    html, resources = search_resources(page.text, url)
+    page = get_response(url)
 
+    html, resources = search_resources(page.text, url)
     save_resources(resources, dir_path)
 
-    logger.debug(END_PARSING)
+    logger.debug(FINISH_PARSING)
 
     return html
+
+
+def get_response(url: str) -> requests.Response:
+    '''Gets the response to a page request.'''
+    logger.debug(START_REQUEST.format(url))
+
+    try:
+        page = requests.get(url)
+        if page.status_code == requests.codes.ok:
+            logger.info(FINISH_REQUEST.format(url))
+            return page
+        else:
+            raise requests.exceptions.ConnectionError
+
+    except requests.exceptions.RequestException:
+        raise requests.exceptions.RequestException(REQUEST_ERROR.format(url))
 
 
 def search_resources(html: str, page_url: str) -> Tuple[str, List[Dict]]:
@@ -77,7 +94,7 @@ def search_resources(html: str, page_url: str) -> Tuple[str, List[Dict]]:
 
     html = soup.prettify()
 
-    logger.debug(END_SEARCHING)
+    logger.debug(FINISH_SEARCHING)
 
     return html, resources
 
@@ -128,7 +145,7 @@ def save_resources(resources: List, dir_path: str) -> None:
 
         content = requests.get(resource['link']).content
 
-        logger.debug(END_GET_RESOURCE.format(resource['link']))
+        logger.debug(FINISH_GET_RESOURCE.format(resource['link']))
 
         resource_path = os.path.join(dir_path, resource['name'])
 
@@ -139,6 +156,6 @@ def save_resources(resources: List, dir_path: str) -> None:
         with open(resource_path, 'wb') as file:
             file.write(content)
 
-        logger.info(END_SAVE_RESOURCE.format(resource['link']))
+        logger.info(FINISH_SAVE_RESOURCE.format(resource['link']))
 
-    logger.debug(END_SAVING)
+    logger.debug(FINISH_SAVING)

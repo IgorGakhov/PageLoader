@@ -3,6 +3,10 @@ import re
 from urllib.parse import urlparse
 from typing import Final, Optional, Dict
 
+from page_loader.logger import DIRECTORY_CREATION_ERROR
+
+
+DEFAULT_DIR: Final[str] = os.getcwd()
 
 HTML_EXT: Final[str] = 'html'
 DIR_EXT: Final[str] = 'files'
@@ -65,8 +69,8 @@ def get_dir_path(url: str, destination: str, ext: Optional[str] = None) -> str:
     if not os.path.exists(dir_path):
         try:
             os.makedirs(dir_path)
-        except OSError as error:
-            print(error)
+        except OSError:
+            raise OSError(DIRECTORY_CREATION_ERROR.format(dir_path))
 
     return dir_path
 

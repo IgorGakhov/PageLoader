@@ -72,3 +72,11 @@ def test_save_resources(tmp_path: pathlib.Path):
     for resource in RESOURCES:
         assert resource['name'] in os.listdir(tmp_path)
     assert len(os.listdir(tmp_path)) == 4
+
+
+def test_get_response_with_error_status():
+    url = 'https://example.com'
+    with requests_mock.Mocker() as m:
+        m.get(url, status_code=404)
+        with pytest.raises(requests.exceptions.RequestException):
+            get_response(url)

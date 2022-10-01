@@ -1,6 +1,8 @@
 import os
 import pathlib
 
+import pytest
+
 from page_loader.loading_handler.downloader import download
 from tests.auxiliary import *
 
@@ -44,3 +46,8 @@ def test_download(tmp_path: pathlib.Path):
     received_js = read_file(os.path.join(resource_dir, JS_NAME), flag='r')
 
     assert received_js == expected_js
+
+
+def test_download_for_unknown_directory():
+    with pytest.raises(SystemExit):
+        download('https://www.google.ru/', '/fail/path/for/exit...')
