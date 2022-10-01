@@ -1,9 +1,11 @@
 import os
+import threading
 from urllib.parse import urlparse, urljoin
 from typing import Final, Tuple, List, Dict
 
 import requests
 from bs4 import BeautifulSoup
+from progress.bar import IncrementalBar
 
 from page_loader.loading_handler.file_system_guide import \
     parse_url, get_dir_name, HTML_EXT
@@ -139,23 +141,46 @@ def save_resources(resources: List, dir_path: str) -> None:
     saves them locally at the given location.'''
     logger.debug(START_SAVING)
 
+    bar = IncrementalBar(
+        'Resources Loading',
+        max=len(resources),
+        suffix='%(percent)d%%   [' + IncrementalBar.suffix + ']\n'
+    )
+
+    threads = []
     for resource in resources:
 
-        logger.debug(START_GET_RESOURCE.format(resource['link']))
-
-        content = requests.get(resource['link']).content
-
-        logger.debug(FINISH_GET_RESOURCE.format(resource['link']))
-
-        resource_path = os.path.join(dir_path, resource['name'])
-
-        logger.debug(
-            START_SAVE_RESOURCE.format(resource['link'], resource_path)
+        stream = threading.Thread(
+            target=resource_save_thread,
+            args=(resource, dir_path, bar)
         )
+        threads.append(stream)
+        stream.start()
 
-        with open(resource_path, 'wb') as file:
-            file.write(content)
+    [thread.join() for thread in threads]
 
-        logger.info(FINISH_SAVE_RESOURCE.format(resource['link']))
+    bar.finish()
 
     logger.debug(FINISH_SAVING)
+
+
+def resource_save_thread(resource: Dict, dir_path: str, bar: IncrementalBar) -> None:  # noqa: E501
+    '''Stores a resource locally.'''
+    logger.debug(START_GET_RESOURCE.format(resource['link']))
+
+    content = requests.get(resource['link']).content
+
+    logger.debug(FINISH_GET_RESOURCE.format(resource['link']))
+
+    resource_path = os.path.join(dir_path, resource['name'])
+
+    logger.debug(
+        START_SAVE_RESOURCE.format(resource['link'], resource_path)
+    )
+
+    with open(resource_path, 'wb') as file:
+        file.write(content)
+
+    logger.info(FINISH_SAVE_RESOURCE.format(resource['link']))
+
+    return bar.next()

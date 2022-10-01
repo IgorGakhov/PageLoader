@@ -22,6 +22,7 @@ page-loader = "page_loader.scripts.run:main"
 python = "^3.8"
 requests = "^2.28.1"
 beautifulsoup4 = "^4.11.1"
+progress = "^1.6"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
