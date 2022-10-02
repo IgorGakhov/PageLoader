@@ -13,7 +13,7 @@ from page_loader.logger import logger, \
     START_PARSING, FINISH_PARSING, START_SEARCHING, FINISH_SEARCHING, \
     START_SAVING, FINISH_SAVING, START_GET_RESOURCE, FINISH_GET_RESOURCE, \
     START_SAVE_RESOURCE, FINISH_SAVE_RESOURCE, START_REQUEST, FINISH_REQUEST, \
-    REQUEST_ERROR
+    REQUEST_ERROR, CONNECTION_ERROR
 
 
 TAGS_LINK_ATTRIBUTES: Final[Dict] = {
@@ -64,6 +64,8 @@ def get_response(url: str) -> requests.Response:
         else:
             raise requests.exceptions.ConnectionError
 
+    except requests.exceptions.ConnectionError:
+        raise requests.exceptions.ConnectionError(CONNECTION_ERROR.format(url))
     except requests.exceptions.RequestException:
         raise requests.exceptions.RequestException(REQUEST_ERROR.format(url))
 

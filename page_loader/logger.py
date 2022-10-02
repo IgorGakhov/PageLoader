@@ -28,9 +28,9 @@ FINISH_SAVE_RESOURCE: Final[str] = '[+] Resource {} saved successfully!'
 # ERROR level
 PROGRAM_FAILURE: Final[str] = 'There was a crash at runtime \
 for an unknown reason. See log file.'
-NOT_FOUND_DESTINATION: Final[str] = 'Invalid local path to save files: «{}».'
 DIRECTORY_CREATION_ERROR: Final[str] = 'A system error occurred \
 while creating director(y/ies): «{}».'
+CONNECTION_ERROR: Final[str] = 'An error occurred connecting to page {}.'
 REQUEST_ERROR: Final[str] = 'An ambiguous exception occurred while processing \
 a request for page {}.\nMake sure your input is correct and try again later.'
 
