@@ -1,4 +1,3 @@
-import os
 import sys
 import traceback
 
@@ -6,7 +5,7 @@ from page_loader.loading_handler.file_system_guide import DEFAULT_DIR, \
     get_file_path, get_dir_path
 from page_loader.loading_handler.html_parser import parse_page
 from page_loader.logger import logger, \
-    START_DOWNLOAD, FINISH_DOWNLOAD, NOT_FOUND_DESTINATION
+    START_DOWNLOAD, FINISH_DOWNLOAD
 
 
 def download(url: str, destination: str = DEFAULT_DIR) -> str:
@@ -28,9 +27,6 @@ def download(url: str, destination: str = DEFAULT_DIR) -> str:
         file_path (str): Full path to the downloaded file.
     '''
     try:
-        if not os.path.exists(destination):
-            raise ValueError(NOT_FOUND_DESTINATION.format(destination))
-
         file_path = get_file_path(url, destination)
         dir_path = get_dir_path(url, destination)
 
