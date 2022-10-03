@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from progress.bar import IncrementalBar
 
 from page_loader.loading_handler.file_system_guide import \
-    parse_url, get_dir_name, HTML_EXT
+    parse_url, get_dir_name, get_dir_path, HTML_EXT
 from page_loader.logger import logger, \
     START_PARSING, FINISH_PARSING, START_SEARCHING, FINISH_SEARCHING, \
     START_SAVING, FINISH_SAVING, START_GET_RESOURCE, FINISH_GET_RESOURCE, \
@@ -24,7 +24,7 @@ TAGS_LINK_ATTRIBUTES: Final[Dict] = {
 DOMAIN_ADDRESS: Final[str] = '{}://{}'
 
 
-def parse_page(url: str, dir_path: str) -> str:
+def parse_page(url: str, destination: str) -> str:
     '''
     Description:
     ---
@@ -43,6 +43,8 @@ def parse_page(url: str, dir_path: str) -> str:
     logger.debug(START_PARSING)
 
     page = get_response(url)
+
+    dir_path = get_dir_path(url, destination)
 
     html, resources = search_resources(page.text, url)
     save_resources(resources, dir_path)

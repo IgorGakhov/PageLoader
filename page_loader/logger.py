@@ -8,8 +8,7 @@ from typing import Final, Dict
 START_DOWNLOAD: Final[str] = 'Initiated download of page {} \
 to local directory «{}» ...'
 FINISH_DOWNLOAD: Final[str] = 'FINISHED! Loading is complete successfully!\n\
-The downloaded page is located in the «{}» file,\n\
-the resources are located in «{}».\n'
+The downloaded page is located in the «{}» file,\n'
 START_PARSING: Final[str] = 'Started HTML page parsing ...'
 FINISH_PARSING: Final[str] = 'Finished HTML page parsing.'
 START_REQUEST: Final[str] = 'Getting a response from a page {} ...'
