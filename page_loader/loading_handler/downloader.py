@@ -1,4 +1,3 @@
-import sys
 import traceback
 
 from page_loader.loading_handler.file_system_guide import DEFAULT_DIR, \
@@ -37,9 +36,9 @@ def download(url: str, destination: str = DEFAULT_DIR) -> str:
         with open(file_path, 'w') as file:
             file.write(html)
 
-    except Exception:
-        logger.error(traceback.format_exc())
-        sys.exit(1)
+    except Exception as error:
+        logger.error(traceback.format_exc(1))
+        raise error
 
     logger.info(FINISH_DOWNLOAD.format(file_path, dir_path))
 

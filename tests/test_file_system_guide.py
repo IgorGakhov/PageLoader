@@ -95,6 +95,6 @@ def test_get_paths(url, expected_file_path, expected_dir_path,\
     assert get_dir_path(url, tmp_path, ext='ext') == os.path.join(tmp_path, expected_dir_path_with_custom_ext)
 
 
-def test_get_dir_path_with_makedir_error():
+def test_download_for_unknown_directory():
     with pytest.raises(OSError):
-        get_dir_path('https://page-loader.hexlet.repl.co/', '/Code//fail/path')
+        get_dir_path('https://www.google.ru/', '/fail/path/for/exit...')
