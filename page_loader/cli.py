@@ -26,7 +26,7 @@ def parse_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        '--output',
+        '-o', '--output',
         help=f'output directory (default: {DEFAULT_DIR})',
         dest='destination',
         default=DEFAULT_DIR,
