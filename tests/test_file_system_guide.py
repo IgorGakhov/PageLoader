@@ -96,5 +96,8 @@ def test_get_paths(url, expected_file_path, expected_dir_path,\
 
 
 def test_for_unknown_directory():
+    with pytest.raises(ValueError):
+        get_file_path('https://www.google.ru/', '/fail/path/for/exit...')
+
     with pytest.raises(OSError):
-        check_path_exists('/fail/path/for/exit...')
+        get_dir_path('https://www.google.ru/', '/fail/path/for/exit...')

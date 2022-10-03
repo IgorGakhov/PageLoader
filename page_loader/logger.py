@@ -27,6 +27,7 @@ FINISH_SAVE_RESOURCE: Final[str] = '[+] Resource {} saved successfully!'
 # ERROR level
 PROGRAM_FAILURE: Final[str] = 'There was a crash at runtime \
 for an unknown reason. See log file.'
+STORAGE_PATH_NOT_FOUND: Final[str] = 'The file path entered «{}» is not valid.'
 DIRECTORY_CREATION_ERROR: Final[str] = 'A system error occurred \
 while creating director(y/ies): «{}».'
 CONNECTION_ERROR: Final[str] = 'An error occurred connecting to page {}.'
