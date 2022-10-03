@@ -34,6 +34,8 @@ def get_file_path(url: str, destination: str, ext: Optional[str] = None) -> str:
     ---
         file_path (str): Full path to the downloaded file.
     '''
+    check_path_exists(destination)
+
     base_name = get_base_name(url)
     if ext is None:
         native_ext = parse_url(url).get('ext')
@@ -66,13 +68,18 @@ def get_dir_path(url: str, destination: str, ext: Optional[str] = None) -> str:
     dir_name = get_dir_name(url, ext)
     dir_path = os.path.join(destination, dir_name)
 
-    if not os.path.exists(dir_path):
-        try:
-            os.makedirs(dir_path)
-        except OSError:
-            raise OSError(DIRECTORY_CREATION_ERROR.format(dir_path))
+    check_path_exists(dir_path)
 
     return dir_path
+
+
+def check_path_exists(destination: str) -> None:
+    '''Checks if the path exists. If not, it creates it.'''
+    if not os.path.exists(destination):
+        try:
+            os.makedirs(destination)
+        except OSError:
+            raise OSError(DIRECTORY_CREATION_ERROR.format(destination))
 
 
 def get_dir_name(url: str, ext: Optional[str] = None) -> str:
