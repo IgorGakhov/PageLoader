@@ -5,8 +5,11 @@ import pytest
 import requests
 import requests_mock
 
-from page_loader.loading_handler.html_parser import *
-from tests.auxiliary import *
+from page_loader.loading_handler.html_parser import \
+    get_response, get_full_link, is_local_link, \
+    search_resources, create_resource_name, save_resources
+from tests.auxiliary import read_file, \
+    SOURCE_PAGE, HTML_URL, HTML_FIXTURE, RESOURCES
 
 
 def test_search_resources():
@@ -21,9 +24,9 @@ def test_search_resources():
 
 @pytest.mark.parametrize('link, full_link', [
     ('/', 'https://page-loader.hexlet.repl.co/'),
-    ('/frontend/layout.css', 'https://page-loader.hexlet.repl.co/frontend/layout.css'),
+    ('/frontend/layout.css', 'https://page-loader.hexlet.repl.co/frontend/layout.css'),  # noqa: E501
     ('/courses', 'https://page-loader.hexlet.repl.co/courses'),
-    ('https://ru.hexlet.io/packs/js/runtime.js', 'https://ru.hexlet.io/packs/js/runtime.js')
+    ('https://ru.hexlet.io/packs/js/runtime.js', 'https://ru.hexlet.io/packs/js/runtime.js')  # noqa: E501
 ])
 def test_get_full_link(link, full_link):
     assert get_full_link(link, HTML_URL) == full_link

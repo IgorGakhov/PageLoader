@@ -2,7 +2,9 @@ import os
 import pathlib
 
 from page_loader.loading_handler.downloader import download
-from tests.auxiliary import *
+from tests.auxiliary import read_file, HTML_NAME, HTML_URL, HTML_FIXTURE, \
+    DIRECTORY_NAME, CSS_NAME, CSS_FIXTURE, IMAGE_NAME, IMAGE_FIXTURE, \
+    INNER_HTML_NAME, INNER_HTML_FIXTURE, JS_NAME, JS_FIXTURE
 
 
 def test_download(tmp_path: pathlib.Path):
@@ -31,12 +33,12 @@ def test_download(tmp_path: pathlib.Path):
     assert received_css == expected_css
 
     expected_inner_html = read_file(INNER_HTML_FIXTURE, flag='r')
-    received_inner_html = read_file(os.path.join(resource_dir, INNER_HTML_NAME), flag='r')
+    received_inner_html = read_file(os.path.join(resource_dir, INNER_HTML_NAME), flag='r')  # noqa: E501
 
     assert received_inner_html == expected_inner_html
 
     expected_image = read_file(IMAGE_FIXTURE, flag='rb')
-    received_image = read_file(os.path.join(resource_dir, IMAGE_NAME), flag='rb')
+    received_image = read_file(os.path.join(resource_dir, IMAGE_NAME), flag='rb')  # noqa: E501
 
     assert received_image == expected_image
 
