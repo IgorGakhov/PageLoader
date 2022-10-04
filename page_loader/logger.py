@@ -8,19 +8,20 @@ from typing import Final, Dict
 START_DOWNLOAD: Final[str] = 'Initiated download of page {} \
 to local directory «{}» ...'
 FINISH_DOWNLOAD: Final[str] = 'FINISHED! Loading is complete successfully!\n\
-The downloaded page is located in the «{}» file,\n'
-START_PARSING: Final[str] = 'Started HTML page parsing ...'
-FINISH_PARSING: Final[str] = 'Finished HTML page parsing.'
-START_REQUEST: Final[str] = 'Getting a response from a page {} ...'
-FINISH_REQUEST: Final[str] = 'Response from page {} received.\n\
+The downloaded page is located in the «{}» file,\n\
+the resources are located in «{}».\n'
+PAGE_RECEIVED: Final[str] = 'Response from page {} received.\n\
 Page available for download!'
-START_SEARCHING: Final[str] = 'Started replacing local resource links ...'
-FINISH_SEARCHING: Final[str] = 'Finished replacing local resource links.'
-START_SAVING: Final[str] = 'Started saving page local resources ...'
-FINISH_SAVING: Final[str] = 'Finished saving page local resources.'
-START_GET_RESOURCE: Final[str] = 'Resource content request at address {} ...'
-FINISH_GET_RESOURCE: Final[str] = 'Received resource content at address {}.'
-START_SAVE_RESOURCE: Final[str] = 'Saving the resource {} \
+START_PARSING: Final[str] = 'Started HTML page parsing and \
+replacing local resource links ...'
+FOUND_RESOURCE: Final[str] = '[!] Found resource {}.'
+FINISH_PARSING: Final[str] = 'Finished HTML page parsing and \
+replacing local resource links.'
+START_RESOURCES_SAVING: Final[str] = 'Started saving page local resources ...'
+FINISH_RESOURCES_SAVING: Final[str] = 'Finished saving page local resources.'
+REQUEST: Final[str] = 'Content request at address {} ...'
+RESPONSE: Final[str] = 'Response from page {} received.'
+START_SAVE_RESOURCE: Final[str] = 'Saving the resource {}\n\
 along the path «{}» ...'
 FINISH_SAVE_RESOURCE: Final[str] = '[+] Resource {} saved successfully!'
 

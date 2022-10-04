@@ -3,8 +3,9 @@ import pathlib
 
 import pytest
 
-from page_loader.loading_handler.file_system_guide import parse_url, \
+from page_loader.handler.file_system_guide import \
     get_file_path, get_dir_path
+from page_loader.handler.name_converter import parse_url
 
 
 @pytest.mark.parametrize('url, parsed_url', [
@@ -35,7 +36,7 @@ from page_loader.loading_handler.file_system_guide import parse_url, \
     )
 ])
 def test_parse_url(url, parsed_url):
-    assert parse_url(url) == parsed_url
+    assert parse_url(url, invert=True) == parsed_url
 
 
 @pytest.mark.parametrize('url, expected_file_path, expected_dir_path,\

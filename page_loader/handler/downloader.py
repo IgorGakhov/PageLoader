@@ -1,10 +1,12 @@
 import traceback
 
-from page_loader.loading_handler.file_system_guide import get_file_path, \
-    DEFAULT_DIR
-from page_loader.loading_handler.html_parser import parse_page
+from page_loader.handler.file_system_guide import DEFAULT_DIR, \
+    get_file_path, get_dir_path
+from page_loader.handler.connector import get_response
+from page_loader.handler.html_parser import replace_resources
+from page_loader.handler.saver import save, save_resources
 from page_loader.logger import logger, \
-    START_DOWNLOAD, FINISH_DOWNLOAD
+    START_DOWNLOAD, PAGE_RECEIVED, FINISH_DOWNLOAD
 
 
 def download(url: str, destination: str = DEFAULT_DIR) -> str:
@@ -30,15 +32,19 @@ def download(url: str, destination: str = DEFAULT_DIR) -> str:
 
         logger.info(START_DOWNLOAD.format(url, destination))
 
-        html = parse_page(url, destination)
+        page = get_response(url)
+        logger.info(PAGE_RECEIVED.format(url))
 
-        with open(file_path, 'w') as file:
-            file.write(html)
+        dir_path = get_dir_path(url, destination)
+        html, resources = replace_resources(page.text, url)
+
+        save_resources(resources, dir_path)
+        save(html, file_path)
 
     except Exception as error:
         logger.error(traceback.format_exc(1))
         raise error
 
-    logger.info(FINISH_DOWNLOAD.format(file_path))
+    logger.info(FINISH_DOWNLOAD.format(file_path, dir_path))
 
     return file_path

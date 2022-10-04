@@ -1,10 +1,17 @@
 import os
 import pathlib
 
-from page_loader.loading_handler.downloader import download
+import pytest
+import requests
+import requests_mock
+
+from page_loader.handler.downloader import download
+from page_loader.handler.connector import get_response
+from page_loader.handler.name_converter import create_resource_name
+from page_loader.handler.saver import save_resources
 from tests.auxiliary import read_file, HTML_NAME, HTML_URL, HTML_FIXTURE, \
     DIRECTORY_NAME, CSS_NAME, CSS_FIXTURE, IMAGE_NAME, IMAGE_FIXTURE, \
-    INNER_HTML_NAME, INNER_HTML_FIXTURE, JS_NAME, JS_FIXTURE
+    INNER_HTML_NAME, INNER_HTML_FIXTURE, JS_NAME, JS_FIXTURE, RESOURCES
 
 
 def test_download(tmp_path: pathlib.Path):
@@ -46,3 +53,41 @@ def test_download(tmp_path: pathlib.Path):
     received_js = read_file(os.path.join(resource_dir, JS_NAME), flag='r')
 
     assert received_js == expected_js
+
+
+@pytest.mark.parametrize('link, resource_name', [
+    (
+        'https://page-loader.hexlet.repl.co/courses',
+        'page-loader-hexlet-repl-co-courses.html'
+    ),
+    (
+        'https://page-loader.hexlet.repl.co/assets/application.css',
+        'page-loader-hexlet-repl-co-assets-application.css'
+    ),
+    (
+        'https://page-loader.hexlet.repl.co/assets/professions/nodejs.png',
+        'page-loader-hexlet-repl-co-assets-professions-nodejs.png'
+    ),
+    (
+        'https://page-loader.hexlet.repl.co/script.js',
+        'page-loader-hexlet-repl-co-script.js'
+    )
+])
+def test_create_resource_name(link, resource_name):
+    assert create_resource_name(link) == resource_name
+
+
+def test_save_resources(tmp_path: pathlib.Path):
+    save_resources(RESOURCES, tmp_path)
+
+    for resource in RESOURCES:
+        assert resource['name'] in os.listdir(tmp_path)
+    assert len(os.listdir(tmp_path)) == 4
+
+
+def test_get_response_with_error_status():
+    url = 'https://example.com'
+    with requests_mock.Mocker() as m:
+        m.get(url, status_code=404)
+        with pytest.raises(requests.exceptions.RequestException):
+            get_response(url)

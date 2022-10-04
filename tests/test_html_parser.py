@@ -1,22 +1,18 @@
-import os
-import pathlib
-
 import pytest
 import requests
 import requests_mock
 
-from page_loader.loading_handler.html_parser import \
-    get_response, get_full_link, is_local_link, \
-    search_resources, create_resource_name, save_resources
+from page_loader.handler.html_parser import \
+    replace_resources, get_full_link, is_local_link
 from tests.auxiliary import read_file, \
     SOURCE_PAGE, HTML_URL, HTML_FIXTURE, RESOURCES
 
 
-def test_search_resources():
+def test_replace_resources():
     with requests_mock.Mocker() as mock:
         mock.get(HTML_URL, text=read_file(SOURCE_PAGE))
         html = requests.get(HTML_URL).text
-    html, resources = search_resources(html, HTML_URL)
+    html, resources = replace_resources(html, HTML_URL)
 
     assert resources == RESOURCES
     assert html == read_file(HTML_FIXTURE)
@@ -45,41 +41,3 @@ def test_get_full_link(link, full_link):
 ])
 def test_is_local_link(link, is_local):
     assert is_local_link(link, HTML_URL) == is_local
-
-
-@pytest.mark.parametrize('link, resource_name', [
-    (
-        'https://page-loader.hexlet.repl.co/courses',
-        'page-loader-hexlet-repl-co-courses.html'
-    ),
-    (
-        'https://page-loader.hexlet.repl.co/assets/application.css',
-        'page-loader-hexlet-repl-co-assets-application.css'
-    ),
-    (
-        'https://page-loader.hexlet.repl.co/assets/professions/nodejs.png',
-        'page-loader-hexlet-repl-co-assets-professions-nodejs.png'
-    ),
-    (
-        'https://page-loader.hexlet.repl.co/script.js',
-        'page-loader-hexlet-repl-co-script.js'
-    )
-])
-def test_create_resource_name(link, resource_name):
-    assert create_resource_name(link) == resource_name
-
-
-def test_save_resources(tmp_path: pathlib.Path):
-    save_resources(RESOURCES, tmp_path)
-
-    for resource in RESOURCES:
-        assert resource['name'] in os.listdir(tmp_path)
-    assert len(os.listdir(tmp_path)) == 4
-
-
-def test_get_response_with_error_status():
-    url = 'https://example.com'
-    with requests_mock.Mocker() as m:
-        m.get(url, status_code=404)
-        with pytest.raises(requests.exceptions.RequestException):
-            get_response(url)
