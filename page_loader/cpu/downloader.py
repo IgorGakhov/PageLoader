@@ -38,11 +38,12 @@ def download(url: str, destination: str = DEFAULT_DIR) -> str:
         logger.info(PAGE_RECEIVED.format(url))
 
         dir_path = get_dir_path(url, destination)
-        check_resources_dir(dir_path)
-
         html, resources = replace_resources(page.text, url, dir_path)
 
-        save_resources(resources, dir_path)
+        if resources:
+            check_resources_dir(dir_path)
+            save_resources(resources, dir_path)
+
         save(html, file_path)
 
     except Exception as error:
@@ -51,4 +52,4 @@ def download(url: str, destination: str = DEFAULT_DIR) -> str:
 
     logger.info(FINISH_DOWNLOAD.format(file_path, dir_path))
 
-    return file_path
+    return str(file_path)

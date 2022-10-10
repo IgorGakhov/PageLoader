@@ -18,7 +18,7 @@ def test_download(tmp_path: Path):
 
     # Проверка страницы...
 
-    expected_path = Path(tmp_path).joinpath(HTML_NAME)
+    expected_path = os.path.join(tmp_path, HTML_NAME)
     received_path = download(HTML_URL, tmp_path)
 
     assert received_path == expected_path
