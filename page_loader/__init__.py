@@ -1,3 +1,3 @@
-from page_loader.handler.downloader import download
+from page_loader.cpu.downloader import download
 
 __all__ = ('download',)

@@ -1,24 +1,24 @@
 import os
-import pathlib
+from pathlib import Path
 
 import pytest
 import requests
 import requests_mock
 
-from page_loader.handler.downloader import download
-from page_loader.handler.connector import get_response
-from page_loader.handler.name_converter import create_resource_name
-from page_loader.handler.saver import save_resources
+from page_loader.cpu.downloader import download
+from page_loader.cpu.connector import get_response
+from page_loader.cpu.name_converter import create_resource_name
+from page_loader.cpu.saver import save_resources
 from tests.auxiliary import read_file, HTML_NAME, HTML_URL, HTML_FIXTURE, \
     DIRECTORY_NAME, CSS_NAME, CSS_FIXTURE, IMAGE_NAME, IMAGE_FIXTURE, \
     INNER_HTML_NAME, INNER_HTML_FIXTURE, JS_NAME, JS_FIXTURE, RESOURCES
 
 
-def test_download(tmp_path: pathlib.Path):
+def test_download(tmp_path: Path):
 
     # Проверка страницы...
 
-    expected_path = os.path.join(tmp_path, HTML_NAME)
+    expected_path = Path(tmp_path).joinpath(HTML_NAME)
     received_path = download(HTML_URL, tmp_path)
 
     assert received_path == expected_path
@@ -77,7 +77,7 @@ def test_create_resource_name(link, resource_name):
     assert create_resource_name(link) == resource_name
 
 
-def test_save_resources(tmp_path: pathlib.Path):
+def test_save_resources(tmp_path: Path):
     save_resources(RESOURCES, tmp_path)
 
     for resource in RESOURCES:

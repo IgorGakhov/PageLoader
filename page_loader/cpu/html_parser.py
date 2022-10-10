@@ -1,11 +1,12 @@
 import os
+from pathlib import Path
 from urllib.parse import urlparse, urljoin
 from typing import Final, Tuple, List, Dict
 
 from bs4 import BeautifulSoup
 
-from page_loader.handler.name_converter import \
-    create_dir_name, create_resource_name
+from page_loader.cpu.name_converter import \
+    create_resource_name
 from page_loader.logger import logger, \
     START_PARSING, FOUND_RESOURCE, FINISH_PARSING
 
@@ -17,12 +18,10 @@ TAGS_LINK_ATTRIBUTES: Final[Dict] = {
 }
 
 
-def replace_resources(html: str, page_url: str) -> Tuple[str, List[Dict]]:
+def replace_resources(html: str, page_url: str, dir_path: Path) -> Tuple[str, List[Dict]]:  # noqa: E501
     '''Replaces resource links with their paths in the file system,
     returns the processed html and download links of these resources.'''
     logger.debug(START_PARSING)
-
-    dir_name = create_dir_name(page_url)
 
     soup = BeautifulSoup(html, 'html.parser')
 
@@ -37,7 +36,7 @@ def replace_resources(html: str, page_url: str) -> Tuple[str, List[Dict]]:
                 logger.debug(FOUND_RESOURCE.format(link))
 
                 resource_name = create_resource_name(link)
-                tag[link_attr] = os.path.join(dir_name, resource_name)
+                tag[link_attr] = os.path.join(dir_path.name, resource_name)
 
                 resource = {
                     'link': link,

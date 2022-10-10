@@ -1,18 +1,21 @@
+from pathlib import Path
+
 import pytest
 import requests
 import requests_mock
 
-from page_loader.handler.html_parser import \
+from page_loader.cpu.html_parser import \
     replace_resources, get_full_link, is_local_link
 from tests.auxiliary import read_file, \
-    SOURCE_PAGE, HTML_URL, HTML_FIXTURE, RESOURCES
+    SOURCE_PAGE, HTML_URL, HTML_FIXTURE, RESOURCES, DIRECTORY_NAME
 
 
-def test_replace_resources():
+def test_replace_resources(tmp_path: Path):
     with requests_mock.Mocker() as mock:
         mock.get(HTML_URL, text=read_file(SOURCE_PAGE))
         html = requests.get(HTML_URL).text
-    html, resources = replace_resources(html, HTML_URL)
+    dir_path = Path(tmp_path).joinpath(DIRECTORY_NAME)
+    html, resources = replace_resources(html, HTML_URL, dir_path)
 
     assert resources == RESOURCES
     assert html == read_file(HTML_FIXTURE)

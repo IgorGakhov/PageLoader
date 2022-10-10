@@ -3,7 +3,7 @@ from typing import List
 
 from progress.bar import IncrementalBar
 
-from page_loader.handler.connector import get_response
+from page_loader.cpu.connector import get_response
 from page_loader.logger import logger, \
     START_RESOURCES_SAVING, FINISH_RESOURCES_SAVING, \
     START_SAVE_RESOURCE, FINISH_SAVE_RESOURCE

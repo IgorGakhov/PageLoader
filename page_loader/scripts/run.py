@@ -7,7 +7,7 @@ from typing import NoReturn
 from page_loader.cli import parse_arguments
 from page_loader.logger import logger, \
     PROGRAM_FAILURE
-from page_loader.handler.downloader import download
+from page_loader.cpu.downloader import download
 
 
 def main() -> NoReturn:

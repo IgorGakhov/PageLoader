@@ -1,37 +1,12 @@
 import os
 import re
 from urllib.parse import urlparse
-from typing import Final, Optional, Dict
+from typing import Final, Dict
 
-
-HTML_EXT: Final[str] = 'html'
-DIR_EXT: Final[str] = 'files'
 
 USER_PASSWORD: Final[re.Pattern] = re.compile(r'.*@')  # for Network location
 NOT_WORD: Final[re.Pattern] = re.compile(r'\W')
 HYPHENS_AROUND: Final[re.Pattern] = re.compile(r'(^-*)|(-*$)')
-
-
-def create_file_name(url: str, ext: Optional[str] = None) -> str:
-    '''Generates a name for file.'''
-    base_name = get_base_name(url)
-    if ext is None:
-        native_ext = parse_url(url, invert=True).get('ext')
-        ext = native_ext if native_ext else HTML_EXT
-
-    file_name = f'{base_name}.{ext}'
-
-    return file_name
-
-
-def create_dir_name(url: str, ext: Optional[str] = None) -> str:
-    '''Generates a name for the resource directory.'''
-    base_name = get_base_name(url)
-    ext = DIR_EXT if ext is None else ext
-
-    dir_name = f'{base_name}_{ext}'
-
-    return dir_name
 
 
 def create_resource_name(link: str) -> str:
@@ -41,7 +16,7 @@ def create_resource_name(link: str) -> str:
     netloc = parsed_resource_link['netloc']
     path = parsed_resource_link['path']
     ext = parsed_resource_link['ext']
-    ext = ext if ext else HTML_EXT
+    ext = ext if ext else 'html'
 
     resource_name = f'{netloc}-{path}.{ext}'
 
