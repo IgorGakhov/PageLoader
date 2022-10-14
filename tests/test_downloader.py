@@ -6,7 +6,7 @@ import requests
 import requests_mock
 
 from page_loader.cpu.downloader import download
-from page_loader.cpu.connector import get_response_content
+from page_loader.cpu.connector import load_page_text
 from page_loader.cpu.name_converter import create_resource_name
 from tests.auxiliary import read_file, HTML_NAME, HTML_URL, HTML_FIXTURE, \
     DIRECTORY_NAME, CSS_NAME, CSS_FIXTURE, IMAGE_NAME, IMAGE_FIXTURE, \
@@ -81,4 +81,4 @@ def test_get_response_with_error_status():
     with requests_mock.Mocker() as m:
         m.get(url, status_code=404)
         with pytest.raises(requests.exceptions.RequestException):
-            get_response_content(url)
+            load_page_text(url)

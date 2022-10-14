@@ -8,7 +8,7 @@ import bs4
 from page_loader.cpu.file_system_guide import \
     initialize_resources_dir, save_data_to_file
 from page_loader.cpu.name_converter import create_resource_name
-from page_loader.cpu.connector import get_response_content
+from page_loader.cpu.connector import load_page_content
 from page_loader.progress import Progress
 from page_loader.logger import logger
 
@@ -113,7 +113,7 @@ def run_resource_download_thread(tag: bs4.element.Tag,
 
     logger.debug(START_SAVE_RESOURCE.format(link, dir_path))
 
-    content = get_response_content(link)
+    content = load_page_content(link)
     path = Path(dir_path).joinpath(resource_name)
 
     save_data_to_file(content, path)
