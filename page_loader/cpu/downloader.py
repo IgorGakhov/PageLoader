@@ -1,7 +1,5 @@
 from typing import Final
 
-import traceback
-
 from page_loader.cpu.file_system_guide import DEFAULT_DIR, \
     check_destination, get_file_path, save_data_to_file
 from page_loader.cpu.connector import load_page_text
@@ -35,21 +33,15 @@ def download(url: str, destination: str = DEFAULT_DIR) -> str:
     ---
         file_path (str): Full path to the downloaded file.
     '''
-    try:
-        check_destination(destination)
-        file_path = get_file_path(url, destination)
-        logger.info(START_DOWNLOAD.format(url, destination))
+    check_destination(destination)
+    file_path = get_file_path(url, destination)
+    logger.info(START_DOWNLOAD.format(url, destination))
 
-        text = load_page_text(url)
-        logger.info(PAGE_RECEIVED.format(url))
+    text = load_page_text(url)
+    logger.info(PAGE_RECEIVED.format(url))
 
-        html = process_resources(text, url, destination)
-        save_data_to_file(html, file_path)
-
-    except Exception as error:
-        logger.error(traceback.format_exc(1))
-        raise error
-
+    html = process_resources(text, url, destination)
+    save_data_to_file(html, file_path)
     logger.info(FINISH_DOWNLOAD.format(file_path))
 
     return str(file_path)
