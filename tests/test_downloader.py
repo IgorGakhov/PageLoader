@@ -6,12 +6,11 @@ import requests
 import requests_mock
 
 from page_loader.cpu.downloader import download
-from page_loader.cpu.connector import get_response
+from page_loader.cpu.connector import get_response_content
 from page_loader.cpu.name_converter import create_resource_name
-from page_loader.cpu.saver import save_resources
 from tests.auxiliary import read_file, HTML_NAME, HTML_URL, HTML_FIXTURE, \
     DIRECTORY_NAME, CSS_NAME, CSS_FIXTURE, IMAGE_NAME, IMAGE_FIXTURE, \
-    INNER_HTML_NAME, INNER_HTML_FIXTURE, JS_NAME, JS_FIXTURE, RESOURCES
+    INNER_HTML_NAME, INNER_HTML_FIXTURE, JS_NAME, JS_FIXTURE
 
 
 def test_download(tmp_path: Path):
@@ -77,17 +76,9 @@ def test_create_resource_name(link, resource_name):
     assert create_resource_name(link) == resource_name
 
 
-def test_save_resources(tmp_path: Path):
-    save_resources(RESOURCES, tmp_path)
-
-    for resource in RESOURCES:
-        assert resource['name'] in os.listdir(tmp_path)
-    assert len(os.listdir(tmp_path)) == 4
-
-
 def test_get_response_with_error_status():
     url = 'https://example.com'
     with requests_mock.Mocker() as m:
         m.get(url, status_code=404)
         with pytest.raises(requests.exceptions.RequestException):
-            get_response(url)
+            get_response_content(url)

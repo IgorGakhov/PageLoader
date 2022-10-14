@@ -4,8 +4,12 @@ from typing import Final, Optional
 
 from page_loader.cpu.name_converter import \
     get_base_name, parse_url
-from page_loader.logger import \
-    STORAGE_PATH_NOT_FOUND, DIRECTORY_CREATION_ERROR
+from page_loader.logger import logger
+
+
+STORAGE_PATH_NOT_FOUND: Final[str] = 'The file path entered «{}» is not valid.'
+DIRECTORY_CREATION_ERROR: Final[str] = 'A system error occurred \
+while creating director(y/ies): «{}».'
 
 
 DEFAULT_DIR: Final[str] = os.getcwd()
@@ -66,14 +70,27 @@ def get_dir_path(url: str, destination: str) -> Path:
 def check_destination(destination: str) -> None:
     '''Checks if the entered save path is valid.'''
     if not os.path.exists(destination):
-        raise ValueError(STORAGE_PATH_NOT_FOUND.format(destination))
+        logger.error(STORAGE_PATH_NOT_FOUND.format(destination))
+        raise ValueError
 
 
-def check_resources_dir(dir_path: Path) -> None:
-    '''Checks for the existence of a directory to save resources
-    and creates it if necessary.'''
+def initialize_resources_dir(url: str, destination: str) -> Path:
+    '''Creative name for a directory and creates it if it doesn't exist.'''
+    dir_path = get_dir_path(url, destination)
     if not os.path.exists(dir_path):
         try:
             os.mkdir(dir_path)
         except OSError:
-            raise OSError(DIRECTORY_CREATION_ERROR.format(dir_path))
+            logger.error(DIRECTORY_CREATION_ERROR.format(dir_path))
+            raise OSError
+
+    return dir_path
+
+
+def save_data_to_file(data: str, file_path: Path) -> None:
+    '''Saves data to the specified file.\n
+    Saving occurs in binary mode if the data is binary,
+    in other cases in text mode.'''
+    mode = 'wb' if isinstance(data, bytes) else 'w'
+    with open(file_path, mode) as file:
+        file.write(data)

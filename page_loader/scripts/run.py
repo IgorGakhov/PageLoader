@@ -2,12 +2,15 @@
 
 
 import sys
-from typing import NoReturn
+from typing import Final, NoReturn
 
 from page_loader.cli import parse_arguments
-from page_loader.logger import logger, \
-    PROGRAM_FAILURE
 from page_loader.cpu.downloader import download
+from page_loader.logger import logger
+
+
+PROGRAM_FAILURE: Final[str] = 'There was a crash at runtime \
+for an unknown reason. See log file.'
 
 
 def main() -> NoReturn:

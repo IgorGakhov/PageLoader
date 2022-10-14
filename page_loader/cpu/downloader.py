@@ -1,12 +1,20 @@
+from typing import Final
+
 import traceback
 
 from page_loader.cpu.file_system_guide import DEFAULT_DIR, \
-    check_destination, check_resources_dir, get_file_path, get_dir_path
-from page_loader.cpu.connector import get_response
-from page_loader.cpu.html_parser import replace_resources
-from page_loader.cpu.saver import save, save_resources
-from page_loader.logger import logger, \
-    START_DOWNLOAD, PAGE_RECEIVED, FINISH_DOWNLOAD
+    check_destination, get_file_path, save_data_to_file
+from page_loader.cpu.connector import get_response_content
+from page_loader.cpu.html_parser import process_resources
+from page_loader.logger import logger
+
+
+START_DOWNLOAD: Final[str] = 'Initiated download of page {} \
+to local directory «{}» ...'
+PAGE_RECEIVED: Final[str] = 'Response from page {} received.\n\
+Page available for download!'
+FINISH_DOWNLOAD: Final[str] = 'FINISHED! Loading is complete successfully!\n\
+The downloaded page is located in the «{}» file.\n'
 
 
 def download(url: str, destination: str = DEFAULT_DIR) -> str:
@@ -29,27 +37,19 @@ def download(url: str, destination: str = DEFAULT_DIR) -> str:
     '''
     try:
         check_destination(destination)
-
         file_path = get_file_path(url, destination)
-
         logger.info(START_DOWNLOAD.format(url, destination))
 
-        page = get_response(url)
+        content = get_response_content(url)
         logger.info(PAGE_RECEIVED.format(url))
 
-        dir_path = get_dir_path(url, destination)
-        html, resources = replace_resources(page.text, url, dir_path)
-
-        if resources:
-            check_resources_dir(dir_path)
-            save_resources(resources, dir_path)
-
-        save(html, file_path)
+        html = process_resources(content, url, destination)
+        save_data_to_file(html, file_path)
 
     except Exception as error:
         logger.error(traceback.format_exc(1))
         raise error
 
-    logger.info(FINISH_DOWNLOAD.format(file_path, dir_path))
+    logger.info(FINISH_DOWNLOAD.format(file_path))
 
     return str(file_path)
