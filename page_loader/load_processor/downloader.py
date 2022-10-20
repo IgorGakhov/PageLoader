@@ -1,9 +1,10 @@
 from typing import Final
 
-from page_loader.cpu.file_system_guide import DEFAULT_DIR, \
-    check_destination, get_file_path, save_data_to_file
-from page_loader.cpu.connector import load_page_text
-from page_loader.cpu.html_parser import process_resources
+from page_loader.load_processor.file_system_guide import DEFAULT_DIR, \
+    check_destination, get_file_path
+from page_loader.load_processor.data_loader import load_page_text
+from page_loader.load_processor.html_parser import process_resources
+from page_loader.load_processor.saver import save_page
 from page_loader.logger import logger
 
 
@@ -41,7 +42,7 @@ def download(url: str, destination: str = DEFAULT_DIR) -> str:
     logger.info(PAGE_RECEIVED.format(url))
 
     html = process_resources(text, url, destination)
-    save_data_to_file(html, file_path)
+    save_page(html, file_path)
     logger.info(FINISH_DOWNLOAD.format(file_path))
 
     return str(file_path)

@@ -1,7 +1,7 @@
 import os
 import logging
 import logging.config
-from typing import Final, Dict
+from typing import Dict, Final
 
 
 CONSOLED_FORMAT: Final[str] = '{asctime} {levelname}: {message}'

@@ -2,9 +2,9 @@ from pathlib import Path
 
 import pytest
 
-from page_loader.cpu.file_system_guide import \
+from page_loader.load_processor.file_system_guide import \
     check_destination, initialize_resources_dir, get_file_path, get_dir_path
-from page_loader.cpu.name_converter import parse_url
+from page_loader.load_processor.name_converter import parse_url
 
 
 @pytest.mark.parametrize('url, parsed_url', [

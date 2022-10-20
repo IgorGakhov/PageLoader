@@ -5,7 +5,7 @@ import sys
 from typing import Final, NoReturn
 
 from page_loader.cli import parse_arguments
-from page_loader.cpu.downloader import download
+from page_loader.load_processor.downloader import download
 from page_loader.logger import logger
 
 

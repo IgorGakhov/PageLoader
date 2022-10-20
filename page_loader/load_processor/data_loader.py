@@ -5,8 +5,8 @@ import requests
 from page_loader.logger import logger
 
 
-GETTING_TEXT = 'Getting text from page {} ...'
-GETTING_CONTENT = 'Getting content from page {} ...'
+GETTING_TEXT: Final[str] = 'Getting text from page {} ...'
+GETTING_CONTENT: Final[str] = 'Getting content from page {} ...'
 REQUEST: Final[str] = 'Content request at address {} ...'
 RESPONSE: Final[str] = 'Response from page {} received.'
 CONNECTION_ERROR: Final[str] = 'An error occurred connecting to page {}.'

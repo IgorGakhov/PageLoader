@@ -1,7 +1,7 @@
 import os
 import re
 from urllib.parse import urlparse
-from typing import Final, Dict
+from typing import Dict, Final
 
 
 USER_PASSWORD: Final[re.Pattern] = re.compile(r'.*@')  # for Network location

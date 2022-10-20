@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from typing import Final, Optional
 
-from page_loader.cpu.name_converter import \
+from page_loader.load_processor.name_converter import \
     get_base_name, parse_url
 from page_loader.logger import logger
 
@@ -85,12 +85,3 @@ def initialize_resources_dir(url: str, destination: str) -> Path:
             raise OSError
 
     return dir_path
-
-
-def save_data_to_file(data: str, file_path: Path) -> None:
-    '''Saves data to the specified file.\n
-    Saving occurs in binary mode if the data is binary,
-    in other cases in text mode.'''
-    mode = 'wb' if isinstance(data, bytes) else 'w'
-    with open(file_path, mode) as file:
-        file.write(data)

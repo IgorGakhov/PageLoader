@@ -186,7 +186,7 @@ The utility downloads resources and shows the progress of each resource in the t
 >> page-loader --output /home/user/page_storage https://page-loader.hexlet.repl.co/
 ```
 ```bash
-15:12:16 INFO: Initiated download of page https://page-loader.hexlet.repl.co/ to local directory «/home/igor/page_storage» ...
+15:12:16 INFO: Initiated download of page https://page-loader.hexlet.repl.co/ to local directory «/home/user/page_storage» ...
 15:12:17 INFO: Response from page https://page-loader.hexlet.repl.co/ received.
 Page available for download!
 15:12:19 INFO: [+] Resource https://page-loader.hexlet.repl.co/assets/professions/nodejs.png saved successfully!

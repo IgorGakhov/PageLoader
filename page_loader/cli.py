@@ -1,6 +1,6 @@
 import argparse
 
-from page_loader.cpu.downloader import DEFAULT_DIR
+from page_loader.load_processor.downloader import DEFAULT_DIR
 
 
 def parse_arguments() -> argparse.Namespace:

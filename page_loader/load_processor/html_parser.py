@@ -1,14 +1,14 @@
 import os
 from pathlib import Path
 from urllib.parse import urlparse, urljoin
-from typing import Final, Dict
+from typing import List, Dict, Final, Optional, Union
 
 import bs4
 
-from page_loader.cpu.file_system_guide import \
-    initialize_resources_dir, save_data_to_file
-from page_loader.cpu.name_converter import create_resource_name
-from page_loader.cpu.connector import load_page_content
+from page_loader.load_processor.file_system_guide import initialize_resources_dir  # noqa: E501
+from page_loader.load_processor.name_converter import create_resource_name
+from page_loader.load_processor.data_loader import load_page_content
+from page_loader.load_processor.saver import save_resource
 from page_loader.progress import Progress
 from page_loader.logger import logger
 
@@ -25,7 +25,7 @@ along the path «{}» ...'
 FINISH_SAVE_RESOURCE: Final[str] = '[+] Resource {} saved successfully!'
 
 
-TAGS_LINK_ATTRIBUTES: Final[Dict] = {
+TAGS_LINK_ATTRIBUTES: Final[Dict[str, str]] = {
     'img': 'src',
     'link': 'href',
     'script': 'src'
@@ -53,11 +53,30 @@ def process_resources(html: str, page_url: str, destination: str) -> str:
 
     soup = bs4.BeautifulSoup(html, 'html.parser')
     target_tags = soup.find_all(TAGS_LINK_ATTRIBUTES.keys())
-    local_resources_tags = filter_local_resources(target_tags, page_url)
 
-    if len(local_resources_tags):
+    if len(target_tags):
         dir_path = initialize_resources_dir(page_url, destination)
-        download_resources(local_resources_tags, dir_path)
+
+        local_resources = []
+        for tag in target_tags:
+            link_attr = get_link_attribute(tag)
+
+            link: Optional[str] = tag.get(link_attr)
+            if not link:
+                break
+
+            full_link = get_full_link(link, page_url)
+            if is_local_link(full_link, page_url):
+                resource_name = create_resource_name(full_link)
+                tag[link_attr] = os.path.join(dir_path.name, resource_name)
+
+                resource = {
+                    'link': full_link,
+                    'path': Path(dir_path).joinpath(resource_name)
+                }
+                local_resources.append(resource)
+
+        download_resources(local_resources)
 
     html = soup.prettify()
 
@@ -66,60 +85,30 @@ def process_resources(html: str, page_url: str, destination: str) -> str:
     return html
 
 
-def filter_local_resources(target_tags: bs4.ResultSet,
-                           page_url: str) -> bs4.ResultSet:
-    '''Filters only tags with local links from target tags.'''
-    target_resources = bs4.ResultSet(target_tags)
-
-    for tag in target_tags:
-        link_attr = get_link_attribute(tag)
-        link = tag.get(link_attr)
-
-        if link:
-            full_link = get_full_link(link, page_url)
-
-            if is_local_link(full_link, page_url):
-                logger.debug(FOUND_RESOURCE.format(link))
-                tag[link_attr] = full_link
-                target_resources.append(tag)
-
-    return target_resources
-
-
-def download_resources(local_resources_tags: bs4.ResultSet,
-                       dir_path: Path) -> None:
+def download_resources(local_resources: List[Dict]) -> None:
     '''Traverses a set of tags and downloads the contents
     of their links to local storage.'''
     logger.debug(START_RESOURCES_SAVING)
 
-    progress = Progress(len(local_resources_tags))
-    for tag in local_resources_tags:
+    progress = Progress(len(local_resources))
+    for resource in local_resources:
         # ToDo: implement multi-threaded loading ...
-        run_resource_download_thread(tag, dir_path, progress)
+        download_resource(resource, progress)
 
     progress.downloading_resources_finish()
     logger.debug(FINISH_RESOURCES_SAVING)
 
 
-def run_resource_download_thread(tag: bs4.element.Tag,
-                                 dir_path: Path,
-                                 progress: Progress) -> None:
+def download_resource(resource: Dict[str, Union[str, Path]],
+                      progress: Progress) -> None:
     '''Downloads the contents of a tag link to local storage.'''
-    link_attr = get_link_attribute(tag)
-    link = tag[link_attr]
+    logger.debug(START_SAVE_RESOURCE.format(resource['link'], resource['path']))
 
-    resource_name = create_resource_name(link)
-    tag[link_attr] = os.path.join(dir_path.name, resource_name)
-
-    logger.debug(START_SAVE_RESOURCE.format(link, dir_path))
-
-    content = load_page_content(link)
-    path = Path(dir_path).joinpath(resource_name)
-
-    save_data_to_file(content, path)
+    content = load_page_content(resource['link'])
+    save_resource(content, resource['path'])
 
     progress.downloading_resources_next()
-    logger.info(FINISH_SAVE_RESOURCE.format(link))
+    logger.info(FINISH_SAVE_RESOURCE.format(resource['link']))
 
 
 def get_link_attribute(tag: bs4.element.Tag) -> str:

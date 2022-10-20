@@ -5,9 +5,9 @@ import pytest
 import requests
 import requests_mock
 
-from page_loader.cpu.downloader import download
-from page_loader.cpu.connector import load_page_text
-from page_loader.cpu.name_converter import create_resource_name
+from page_loader.load_processor.downloader import download
+from page_loader.load_processor.data_loader import load_page_text
+from page_loader.load_processor.name_converter import create_resource_name
 from tests.auxiliary import read_file, HTML_NAME, HTML_URL, HTML_FIXTURE, \
     DIRECTORY_NAME, CSS_NAME, CSS_FIXTURE, IMAGE_NAME, IMAGE_FIXTURE, \
     INNER_HTML_NAME, INNER_HTML_FIXTURE, JS_NAME, JS_FIXTURE

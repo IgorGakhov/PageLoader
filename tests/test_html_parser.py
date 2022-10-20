@@ -5,7 +5,7 @@ import pytest
 import requests
 import requests_mock
 
-from page_loader.cpu.html_parser import \
+from page_loader.load_processor.html_parser import \
     process_resources, get_full_link, is_local_link
 from tests.auxiliary import read_file, \
     SOURCE_PAGE, HTML_URL, HTML_FIXTURE, RESOURCES, DIRECTORY_NAME
