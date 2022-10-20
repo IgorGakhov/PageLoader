@@ -76,7 +76,7 @@ def process_resources(html: str, page_url: str, destination: str) -> str:
                 }
                 local_resources.append(resource)
 
-        download_resources(local_resources)
+        download_resource_pack(local_resources)
 
     html = soup.prettify()
 
@@ -85,7 +85,7 @@ def process_resources(html: str, page_url: str, destination: str) -> str:
     return html
 
 
-def download_resources(local_resources: List[Dict]) -> None:
+def download_resource_pack(local_resources: List[Dict]) -> None:
     '''Traverses a set of tags and downloads the contents
     of their links to local storage.'''
     logger.debug(START_RESOURCES_SAVING)
