@@ -3,17 +3,23 @@ from pathlib import Path
 
 import pytest
 import requests
-import requests_mock
+from requests_mock.mocker import Mocker
 
 from page_loader.load_processor.downloader import download
 from page_loader.load_processor.data_loader import load_page_text
 from page_loader.load_processor.name_converter import create_resource_name
 from tests.auxiliary import read_file, HTML_NAME, HTML_URL, HTML_FIXTURE, \
-    DIRECTORY_NAME, CSS_NAME, CSS_FIXTURE, IMAGE_NAME, IMAGE_FIXTURE, \
-    INNER_HTML_NAME, INNER_HTML_FIXTURE, JS_NAME, JS_FIXTURE
+    CSS_NAME, CSS_URL, CSS_FIXTURE, IMAGE_NAME, IMAGE_URL, IMAGE_FIXTURE, \
+    INNER_HTML_NAME, INNER_HTML_URL, INNER_HTML_FIXTURE, \
+    JS_NAME, JS_URL, JS_FIXTURE, SOURCE_PAGE, DIRECTORY_NAME
 
 
-def test_download(tmp_path: Path):
+def test_download(requests_mock: Mocker, tmp_path: Path):
+    requests_mock.get(HTML_URL, text=read_file(SOURCE_PAGE))
+    requests_mock.get(CSS_URL, text=read_file(CSS_FIXTURE))
+    requests_mock.get(IMAGE_URL, content=read_file(IMAGE_FIXTURE, 'rb'))
+    requests_mock.get(INNER_HTML_URL, text=read_file(INNER_HTML_FIXTURE))
+    requests_mock.get(JS_URL, text=read_file(JS_FIXTURE))
 
     # Проверка страницы...
 
@@ -76,9 +82,8 @@ def test_create_resource_name(link, resource_name):
     assert create_resource_name(link) == resource_name
 
 
-def test_get_response_with_error_status():
+def test_get_response_with_error_status(requests_mock: Mocker):
     url = 'https://example.com'
-    with requests_mock.Mocker() as m:
-        m.get(url, status_code=404)
-        with pytest.raises(requests.exceptions.RequestException):
-            load_page_text(url)
+    requests_mock.get(url, status_code=404)
+    with pytest.raises(requests.exceptions.RequestException):
+        load_page_text(url)
