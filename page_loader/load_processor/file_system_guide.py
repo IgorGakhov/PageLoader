@@ -74,14 +74,11 @@ def check_destination(destination: str) -> None:
         raise ValueError
 
 
-def initialize_resources_dir(url: str, destination: str) -> Path:
-    '''Creative name for a directory and creates it if it doesn't exist.'''
-    dir_path = get_dir_path(url, destination)
+def make_resources_dir(dir_path: Path) -> None:
+    '''Creates a resource directory.'''
     if not os.path.exists(dir_path):
         try:
             os.mkdir(dir_path)
         except OSError:
             logger.error(DIRECTORY_CREATION_ERROR.format(dir_path))
             raise OSError
-
-    return dir_path

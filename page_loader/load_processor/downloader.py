@@ -1,10 +1,13 @@
-from typing import Final
+from pathlib import Path
+from typing import List, Dict, Final, Union
 
 from page_loader.load_processor.file_system_guide import DEFAULT_DIR, \
-    check_destination, get_file_path
-from page_loader.load_processor.data_loader import load_page_text
+    check_destination, get_file_path, get_dir_path, make_resources_dir
+from page_loader.load_processor.data_loader import \
+    load_page_text, load_page_content
 from page_loader.load_processor.html_parser import process_resources
-from page_loader.load_processor.saver import save_page
+from page_loader.load_processor.saver import save_page, save_resource
+from page_loader.progress import Progress
 from page_loader.logger import logger
 
 
@@ -14,6 +17,11 @@ PAGE_RECEIVED: Final[str] = 'Response from page {} received.\n\
 Page available for download!'
 FINISH_DOWNLOAD: Final[str] = 'FINISHED! Loading is complete successfully!\n\
 The downloaded page is located in the «{}» file.\n'
+START_RESOURCES_SAVING: Final[str] = 'Started saving page local resources ...'
+FINISH_RESOURCES_SAVING: Final[str] = 'Finished saving page local resources.'
+START_SAVE_RESOURCE: Final[str] = 'Saving the resource {}\n\
+along the path «{}» ...'
+FINISH_SAVE_RESOURCE: Final[str] = '[+] Resource {} saved successfully!'
 
 
 def download(url: str, destination: str = DEFAULT_DIR) -> str:
@@ -36,13 +44,44 @@ def download(url: str, destination: str = DEFAULT_DIR) -> str:
     '''
     check_destination(destination)
     file_path = get_file_path(url, destination)
+    dir_path = get_dir_path(url, destination)
     logger.info(START_DOWNLOAD.format(url, destination))
 
     text = load_page_text(url)
     logger.info(PAGE_RECEIVED.format(url))
 
-    html = process_resources(text, url, destination)
+    html, resources = process_resources(text, url, dir_path)
+    if len(resources):
+        make_resources_dir(dir_path)
+        download_resource_pack(resources)
+
     save_page(html, file_path)
     logger.info(FINISH_DOWNLOAD.format(file_path))
 
     return str(file_path)
+
+
+def download_resource_pack(local_resources: List[Dict]) -> None:
+    '''Traverses a set of tags and downloads the contents
+    of their links to local storage.'''
+    logger.debug(START_RESOURCES_SAVING)
+
+    progress = Progress(len(local_resources))
+    for resource in local_resources:
+        # ToDo: implement multi-threaded loading ...
+        download_resource(resource, progress)
+
+    progress.downloading_resources_finish()
+    logger.debug(FINISH_RESOURCES_SAVING)
+
+
+def download_resource(resource: Dict[str, Union[str, Path]],
+                      progress: Progress) -> None:
+    '''Downloads the contents of a tag link to local storage.'''
+    logger.debug(START_SAVE_RESOURCE.format(resource['link'], resource['path']))
+
+    content = load_page_content(resource['link'])
+    save_resource(content, resource['path'])
+
+    progress.downloading_resources_next()
+    logger.info(FINISH_SAVE_RESOURCE.format(resource['link']))

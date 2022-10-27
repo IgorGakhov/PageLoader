@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from page_loader.load_processor.file_system_guide import \
-    check_destination, initialize_resources_dir, get_file_path, get_dir_path
+    check_destination, make_resources_dir, get_file_path, get_dir_path
 from page_loader.load_processor.name_converter import parse_url
 
 
@@ -112,6 +112,4 @@ def test_for_unknown_directory():
         check_destination('/fail/path/for/exit...')
 
     with pytest.raises(OSError):
-        initialize_resources_dir(
-            'https://example.com', '/fail/path/for/exit...'
-        )
+        make_resources_dir('/fail/path/for/exit...')
