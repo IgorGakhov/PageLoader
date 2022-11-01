@@ -186,27 +186,25 @@ The utility downloads resources and shows the progress of each resource in the t
 >> page-loader --output /home/user/page_storage https://page-loader.hexlet.repl.co/
 ```
 ```bash
-15:12:16 INFO: Initiated download of page https://page-loader.hexlet.repl.co/ to local directory «/home/user/page_storage» ...
-15:12:17 INFO: Response from page https://page-loader.hexlet.repl.co/ received.
+12:41:24 INFO: Initiated download of page https://page-loader.hexlet.repl.co/ to local directory «/home/user/page_storage» ...
+12:41:25 INFO: Response from page https://page-loader.hexlet.repl.co/ received.
 Page available for download!
-15:12:19 INFO: [+] Resource https://page-loader.hexlet.repl.co/assets/professions/nodejs.png saved successfully!
 Resources Loading |████████                        | 25%   [1/4]
-15:12:19 INFO: [+] Resource https://page-loader.hexlet.repl.co/script.js saved successfully!
+12:41:26 INFO: [+] Resource https://page-loader.hexlet.repl.co/script.js saved successfully!
 Resources Loading |████████████████                | 50%   [2/4]
-15:12:19 INFO: [+] Resource https://page-loader.hexlet.repl.co/assets/application.css saved successfully!
+12:41:26 INFO: [+] Resource https://page-loader.hexlet.repl.co/assets/professions/nodejs.png saved successfully!
 Resources Loading |████████████████████████        | 75%   [3/4]
-15:12:19 INFO: [+] Resource https://page-loader.hexlet.repl.co/courses saved successfully!
+12:41:26 INFO: [+] Resource https://page-loader.hexlet.repl.co/assets/application.css saved successfully!
 Resources Loading |████████████████████████████████| 100%   [4/4]
+12:41:26 INFO: [+] Resource https://page-loader.hexlet.repl.co/courses saved successfully!
 
-15:12:19 INFO: FINISHED! Loading is complete successfully!
-The downloaded page is located in the «/home/user/page_storage/page-loader-hexlet-repl-co.html» file,
-the resources are located in «/home/user/page_storage/page-loader-hexlet-repl-co_files».
+12:41:26 INFO: FINISHED! Loading is complete successfully!
+The downloaded page is located in the «/home/user/page_storage/page-loader-hexlet-repl-co.html» file.
 
 /home/user/page_storage/page-loader-hexlet-repl-co.html
-
 ```
 
-[![asciicast](https://asciinema.org/a/Q5v6HLRb5StNT2AHXdgAmrbCo.svg)](https://asciinema.org/a/Q5v6HLRb5StNT2AHXdgAmrbCo)
+[![asciicast](https://asciinema.org/a/gzaIYGrZVn4IGLIks45InJKIa.svg)](https://asciinema.org/a/gzaIYGrZVn4IGLIks45InJKIa)
 
 ___
 
@@ -229,13 +227,17 @@ List of dev-dependencies:
 .
 ├── page_loader
 │   ├── __init__.py
-│   ├── loading_handler
+│   ├── load_processor
 │   │   ├── __init__.py
 │   │   ├── downloader.py
 │   │   ├── file_system_guide.py
-│   │   └── html_parser.py
+│   │   ├── html_parser.py
+│   │   ├── name_converter.py
+│   │   ├── data_loader.py
+│   │   └── saver.py
 │   ├── cli.py
 │   ├── logger.py
+│   ├── progress.py
 │   └── scripts
 │       ├── __init__.py
 │       └── run.py
