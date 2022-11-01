@@ -1,3 +1,4 @@
+import threading
 from pathlib import Path
 from typing import List, Dict, Final, Union
 
@@ -67,9 +68,16 @@ def download_resource_pack(local_resources: List[Dict]) -> None:
     logger.debug(START_RESOURCES_SAVING)
 
     progress = Progress(len(local_resources))
+    threads = []
     for resource in local_resources:
-        # ToDo: implement multi-threaded loading ...
-        download_resource(resource, progress)
+        stream = threading.Thread(
+            target=download_resource,
+            args=(resource, progress)
+        )
+        threads.append(stream)
+        stream.start()
+
+    [thread.join() for thread in threads]
 
     progress.downloading_resources_finish()
     logger.debug(FINISH_RESOURCES_SAVING)
